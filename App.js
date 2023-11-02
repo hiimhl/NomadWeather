@@ -9,16 +9,27 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
+import { Fontisto } from "@expo/vector-icons";
 
 // 기기의 화면 사이즈
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
+const API_KEY = "66ad1d25eaddc52e77ec8c40664a9670";
+
+// 날씨 정보 : 아이콘 이름
+const icons = {
+  Clouds: "cloudy",
+  Rain: "rains",
+  Clear: "day-sunny",
+  Atmosphere: "cloudy-gusts",
+  Snow: "snow",
+  Drizzle: "rian",
+  Thunderstorm: "lightning",
+};
 
 export default function App() {
   const [city, setCity] = useState("Loading...");
   const [days, setDays] = useState([]);
   const [ok, setOk] = useState(true);
-
-  const API_KEY = "66ad1d25eaddc52e77ec8c40664a9670";
 
   // Location
   const getWeather = async () => {
@@ -67,16 +78,23 @@ export default function App() {
           <View style={styles.day}>
             <ActivityIndicator
               style={styles.loading}
-              color="black"
+              color="white"
               size="large"
             />
           </View>
         ) : (
           days.map((day, index) => (
             <View key={index} style={styles.day}>
-              <Text style={styles.temp}>
-                {parseFloat(day.main.temp).toFixed(1)}
-              </Text>
+              <View style={styles.tempBox}>
+                <Text style={styles.temp}>
+                  {parseFloat(day.main.temp).toFixed(1)}
+                </Text>
+                <Fontisto
+                  name={icons[day.weather[0].main]}
+                  size={50}
+                  color="white"
+                />
+              </View>
 
               <Text style={styles.description}>{day.weather[0].main}</Text>
               <Text style={styles.tinyText}>{day.weather[0].description}</Text>
@@ -115,10 +133,15 @@ const styles = StyleSheet.create({
     alignItems: "left",
     marginLeft: 20,
   },
+  tempBox: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   temp: {
     color: "white",
     fontSize: 85,
     fontWeight: "500",
+    marginRight: 15,
   },
   description: {
     color: "white",
